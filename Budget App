@@ -1,0 +1,87 @@
+from itertools import zip_longest
+
+class Category:
+    def __init__(self, category_name):
+        self.category_name = category_name
+        self.ledger = []
+        self.balance = 0
+
+    def check_funds(self, amount):
+        self.amount = float(amount)
+        if self.amount > self.balance:
+            return False
+        else:
+            return True
+
+    def deposit(self, amount, description="", additional_description=""):
+        self.amount = float(amount)
+        self.description = description
+        self.additional_description = additional_description
+        self.ledger.append({"amount": amount, "description": description + additional_description})
+        self.balance += self.amount
+
+    def withdraw(self, amount, description='', additional_description=""):
+        self.amount = float(amount)
+        self.description = description
+        self.additional_description = additional_description
+        if self.check_funds(self.amount):
+            self.ledger.append({"amount": -amount, "description": description + additional_description})
+            self.balance -= self.amount
+            return True
+        else:
+            return False
+
+    def get_balance(self):
+        return self.balance
+
+    def transfer(self, amount, another_category):
+        self.amount = float(amount)
+        self.another_category = another_category.category_name
+        if self.withdraw(self.amount, "Transfer to ", self.another_category):
+            another_category.deposit(self.amount, 'Transfer from ', self.category_name)
+            return True
+        else:
+            return False
+
+    def __str__(self):
+        print(self.category_name.center(30, "*"))
+        for transaction in self.ledger:
+            spaces = 30 - len(transaction['description'])
+            print(transaction['description'][:23], end='')
+            if spaces < 7:
+                spaces = 7
+            floated_amount = transaction['amount']
+            twozero_amount = f'{floated_amount:.2f}'
+            print(str(twozero_amount).rjust(spaces, " "))
+        return f'Total: {self.balance:.2f}'
+
+def create_spend_chart(categories):
+    total_spend = []
+    temp_spend = 0
+    categories_names = []
+    for category in categories:
+        categories_names.append(category.category_name)
+    for category in categories:
+        for spending in category.ledger:
+            if spending['amount'] < 0:
+                temp_spend += -(spending['amount'])
+        total_spend.append(temp_spend)
+        temp_spend = 0
+    print("Percentage spent by category")
+    percentage = 100
+    for i in range(11):
+        print(str(percentage).rjust(3) + "| ", end="")
+        for i in range(len(categories)):
+            if round(int((total_spend[i] / sum(total_spend)) * 100), -1) >= percentage:
+                print('o', end="  ")
+            else:
+                print(" ", end="  ")
+        print()
+        percentage -= 10
+    print("    -" + ("---" * len(categories)))
+    text = ' '.join(categories_names)
+    for x in zip_longest(*text.split(), fillvalue=' '):
+        print("     ", end="")
+        print('  '.join(x), end="")
+        print("  ")
+    return ""
