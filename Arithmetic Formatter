@@ -1,0 +1,44 @@
+def arithmetic_arranger(problems, solution_need=False):
+    sliced_problems = [[i for i in j.split()] for j in problems]
+
+    if len(problems) > 5:
+        return ('Error: Too many problems.')
+
+    for problem in sliced_problems:
+        if problem[1] != "+" and problem[1] != "-":
+            return ("Error: Operator must be '+' or '-'.")
+        elif problem[0].isdigit()==False or problem[2].isdigit()==False:
+            return ("Error: Numbers must only contain digits.")
+        elif len(problem[0])>4 or len(problem[2])>4:
+            return ('Error: Numbers cannot be more than four digits.')
+
+    for i in range(len(sliced_problems)):
+        if len(sliced_problems[i][0]) > len(sliced_problems[i][2]):
+            print('  ' + sliced_problems[i][0], end='    ')
+        else:
+            print('  ' + sliced_problems[i][0].rjust(len(sliced_problems[i][2])), end='    ')
+    print('\b'*4)
+
+    for i in range(len(sliced_problems)):
+        if len(sliced_problems[i][2]) > len(sliced_problems[i][0]):
+            print(sliced_problems[i][1], sliced_problems[i][2], end='    ')
+        else:
+            print(sliced_problems[i][1], sliced_problems[i][2].rjust(len(sliced_problems[i][0])), end='    ')
+    print('\b'*4)
+
+    for i in range(len(sliced_problems)):
+        if len(sliced_problems[i][2]) > len(sliced_problems[i][0]):
+            print('-'*(len(sliced_problems[i][2])+2), end='    ')
+        else:
+            print('-'*(len(sliced_problems[i][0])+2), end='    ')
+
+    if solution_need:
+        print('\b' * 4)
+        for problem in sliced_problems:
+            if len(problem[2]) > len(problem[0]):
+                print(str(eval(str(problem[0])+str(problem[1])+str(problem[2]))).rjust(len(problem[2])+2), end='    ')
+            else:
+                print(str(eval(str(problem[0])+str(problem[1])+str(problem[2]))).rjust(len(problem[0])+2), end='    ')
+        return ('\b' * 4)
+    else:
+        return ('\b' * 4)
