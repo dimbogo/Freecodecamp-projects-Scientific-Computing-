@@ -1,0 +1,39 @@
+import copy
+import random
+
+class Hat():
+    def __init__(self, **kwargs):
+        self.contents = []
+        self.dict = kwargs
+        for color in self.dict.keys():
+            for quantity in range(self.dict[color]):
+                self.contents.append(color)
+    def draw(self, number):
+        self.number = number
+        if number >= len(self.contents):
+            new_list = self.contents.copy()
+            self.contents = []
+            return new_list
+        else:
+            temp = None
+            new_list = []
+            for i in range(number):
+                temp = random.choice(self.contents)
+                self.contents.remove(temp)
+                new_list.append(temp)
+            return new_list
+
+
+def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
+    M = 0
+    N = num_experiments
+    for i in range(N):
+        temp_hat = copy.deepcopy(hat)
+        temp = 0
+        temp_list = temp_hat.draw(num_balls_drawn)
+        for k,v in expected_balls.items():
+            if temp_list.count(k) >= v:
+                temp += 1
+        if temp == len(expected_balls):
+            M += 1
+    return M / N
